@@ -69,7 +69,7 @@ const store = {
    * @returns {string} - the name of the store
    */
   getName() {
-    // write your code here & return value
+    return this.name;
   },
   /**
    * Returns the inventory of the store
@@ -77,7 +77,7 @@ const store = {
    * @returns {array} - the inventory of the store
    */
   getInventory() {
-    // write your code here & return value
+    return inventory;
   },
   /**
    * Returns an arrays of most expensive items in inventory
@@ -86,7 +86,8 @@ const store = {
    * @return {array} items - the array of items that are filtered
    */
   getExpensiveItems(minPrice) {
-    // write your code here & return value
+    const filteredItems = inventory.filter((item) => item.price > minPrice);
+    return filteredItems;
   },
   /**
    * Returns an array of item names in store
@@ -94,7 +95,8 @@ const store = {
    * @return {array} items - the array of items that are filtered
    */
   getStoreItems() {
-    // write your code here & return value
+    const itemNames = inventory.map((item) => item.name);
+    return itemNames;
   },
   /**
    * Returns true if the item is in the store
@@ -104,7 +106,10 @@ const store = {
    * false otherwise
    */
   isItemInStore(itemName) {
-    // write your code here & return value
+    if (inventory.some((item) => item.name === itemName)) {
+      return true;
+    }
+    return false;
   },
   /**
    * Returns the price of the item
@@ -114,8 +119,13 @@ const store = {
    * -1 if the item is not in the store
    * must use isItemInStore() method in this object
    */
+  // eslint-disable-next-line consistent-return
   getItemPrice(itemName) {
-    // write your code here & return value
+    if (this.isItemInStore(itemName)) {
+      const results = inventory.filter((item) => item.name === itemName);
+      return results[0].price;
+    }
+    return -1;
   },
 
   /**
@@ -126,8 +136,13 @@ const store = {
    * -1 if the item is not in the store
    * must use isItemInStore() method in this object
    */
+  // eslint-disable-next-line consistent-return
   getItemQuantity(itemName) {
-    // write your code here & return value
+    if (this.isItemInStore(itemName)) {
+      const results = inventory.filter((item) => item.name === itemName);
+      return results[0].quantity;
+    }
+    return -1;
   },
 
   /**
@@ -142,7 +157,17 @@ const store = {
    * must use isItemInStore() method in this object
    */
   addItemQuantity(itemName, price, quantity) {
-    // write your code here & return value
+    if (this.isItemInStore(itemName)) {
+      const results = inventory.filter((item) => item.name === itemName);
+      results[0].quantity += quantity;
+      inventory.quantity += quantity;
+      return results[0].quantity;
+      // eslint-disable-next-line no-else-return
+    } else {
+      const currentItem = { itemName, price, quantity };
+      inventory.push(currentItem);
+      return quantity;
+    }
   },
   /**
    * Removes a certain quantity of an item from the store
@@ -154,8 +179,25 @@ const store = {
    * or -1 if the quantity to remove is greater than the quantity of the item
    * must use isItemInStore() method in this object
    */
+  // eslint-disable-next-line consistent-return
   removeItemQuantity(itemName, quantity) {
-    // write your code here & return value
+    if (this.isItemInStore(itemName)) {
+      const results = inventory.filter((item) => item.name === itemName);
+      if (results[0].quantity > quantity) {
+        results[0].quantity -= quantity;
+        inventory.quantity -= quantity;
+
+        return results[0].quantity;
+      // eslint-disable-next-line brace-style
+      }
+      // eslint-disable-next-line no-else-return
+      else {
+        return -1;
+      }
+      // eslint-disable-next-line no-else-return
+    } else {
+      return -1;
+    }
   },
   /**
    * Returns the total of all the items in the store
@@ -164,7 +206,9 @@ const store = {
    * must use the reduce() array method
    */
   getTotalValue() {
-    // write your code here & return value
+    const totalPrice = inventory.reduce((currentTotal, item) => (item.price * item.quantity)
+      + currentTotal, 0);
+    return totalPrice;
   },
 };
 
